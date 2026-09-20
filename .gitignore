@@ -1,0 +1,9 @@
+node_modules/
+dist/
+logs/*.log
+logs/*.jsonl
+frontend/dist/
+frontend/node_modules/
+core/build/
+stub/build/
+.DS_Store

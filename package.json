@@ -1,0 +1,32 @@
+{
+  "name": "testengine",
+  "version": "1.0.0",
+  "description": "Node.js Test Engine: parse JSON test trees, orchestrate sequential execution via Thrift",
+  "main": "dist/main.js",
+  "type": "module",
+  "bin": {
+    "testengine": "./dist/main.js"
+  },
+  "scripts": {
+    "build": "tsup src/main.ts --format esm --dts --clean --outDir dist",
+    "dev": "tsx watch src/main.ts",
+    "serve": "tsx src/api_server.ts",
+    "start": "node dist/main.js",
+    "parse": "tsx src/main.ts parse --tree ./simple.json",
+    "ui": "npm run serve"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.13.1",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

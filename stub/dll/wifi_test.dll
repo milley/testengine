@@ -1,0 +1,23 @@
+/*
+ * 模拟 wifi_test.dll - 用于测试
+ * 这个文件可以被 dlopen 加载
+ */
+
+extern "C" void open_dut_port(const std::map<std::string, std::string>& params) {
+    std::cout << "[DLL] open_dut_port called" << std::endl;
+    std::cout << "  port: " << params.at("port") << std::endl;
+    std::cout << "  sleep_ms: " << params.at("sleep_ms") << std::endl;
+}
+
+extern "C" void close_dut_port() {
+    std::cout << "[DLL] close_dut_port called" << std::endl;
+}
+
+extern "C" void check_test_flag(int test_info, int sleep_ms) {
+    std::cout << "[DLL] check_test_flag called" << std::endl;
+    std::cout << "  test_info: " << test_info << ", sleep_ms: " << sleep_ms << std::endl;
+}
+
+extern "C" void get_input_params() {
+    std::cout << "[DLL] get_input_params called" << std::endl;
+}

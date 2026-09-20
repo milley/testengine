@@ -1,0 +1,44 @@
+:root {
+  --bg: #0f1419;
+  --panel: #171d26;
+  --panel-2: #1e2632;
+  --line: #2a3342;
+  --text: #e7ecf3;
+  --muted: #8b97a8;
+  --accent: #3d8bfd;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #app {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", "PingFang SC", "Noto Sans SC", sans-serif;
+}
+
+.el-tree-v2 {
+  background: transparent !important;
+  color: var(--text);
+}
+
+.el-tree-v2__node {
+  color: var(--text);
+}
+
+.el-form-item__label {
+  color: var(--muted) !important;
+}
+
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  background: var(--panel-2) !important;
+  box-shadow: 0 0 0 1px var(--line) inset !important;
+}
+
+.log-error { color: #ff6b6b; }
+.log-warn { color: #f5c542; }
+.log-info { color: #8fd19e; }
+.log-debug { color: var(--muted); }

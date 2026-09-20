@@ -1,0 +1,44 @@
+{
+    "test_sqeuence": [
+        {
+            "name": "打开dut端口",
+            "type": "node",
+            "dll": "./dll/wifi_test.dll",
+            "function": "open_dut_port",
+            "params": {
+                "port": 10,
+                "sleep_ms": 200,
+                "port_desc": "diag port"
+            }
+        },
+        {
+            "name": "标识位检查",
+            "type": "folder",
+            "dll": "./dll/wifi_test.dll",
+            "function": "get_input_params",
+            "loop_type": "loop",
+            "params": {
+                "mode": "1,2,3"
+            },
+            "children": [
+                {
+                    "name": "检查标识位",
+                    "type": "node",
+                    "dll": "./dll/wifi_test.dll",
+                    "function": "check_test_flag",
+                    "params": {
+                        "test_info": 40,
+                        "sleep_ms": 200
+                    }
+                }
+            ]
+        },
+        {
+            "name": "关闭dut端口",
+            "type": "node",
+            "dll": "./dll/wifi_test.dll",
+            "function": "close_dut_port",
+            "params": {}
+        }
+    ]
+}
