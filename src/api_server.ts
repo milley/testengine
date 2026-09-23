@@ -1,8 +1,31 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import express from "express";
 import cors from "cors";
 import { getEngine } from "./engine.js";
 import { getLogger } from "./logger.js";
 import type { TestNode } from "./types.js";
+
+const SKIP_CONFIGS = new Set(["package.json", "package-lock.json", "tsconfig.json"]);
+
+function listConfigFiles(): string[] {
+  return fs
+    .readdirSync(process.cwd())
+    .filter((name) => name.endsWith(".json") && !SKIP_CONFIGS.has(name))
+    .sort();
+}
+
+function resolveConfig(file: string): string {
+  const base = path.basename(file);
+  if (!base.endsWith(".json") || SKIP_CONFIGS.has(base)) {
+    throw new Error(`invalid config: ${file}`);
+  }
+  const full = path.resolve(process.cwd(), base);
+  if (!fs.existsSync(full)) {
+    throw new Error(`config not found: ${base}`);
+  }
+  return full;
+}
 
 const app = express();
 const engine = getEngine();
@@ -13,6 +36,24 @@ app.use(express.json({ limit: "8mb" }));
 
 app.get("/api/tree", (_req, res) => {
   res.json({ path: engine.jsonPath, tree: engine.tree });
+});
+
+app.get("/api/configs", (_req, res) => {
+  res.json({
+    current: path.basename(engine.jsonPath),
+    path: engine.jsonPath,
+    files: listConfigFiles(),
+  });
+});
+
+app.post("/api/load", (req, res) => {
+  try {
+    const file = String(req.body?.path ?? "");
+    engine.load(resolveConfig(file));
+    res.json({ ok: true, path: engine.jsonPath, tree: engine.tree });
+  } catch (err) {
+    res.status(400).json({ error: err instanceof Error ? err.message : String(err) });
+  }
 });
 
 app.put("/api/tree", (req, res) => {

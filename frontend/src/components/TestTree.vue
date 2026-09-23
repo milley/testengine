@@ -1,8 +1,10 @@
 <template>
   <el-tree-v2
+    v-if="data.length"
     :data="data"
     :height="height"
-    :props="props"
+    :props="treeProps"
+    :default-expanded-keys="expanded"
     highlight-current
     expand-on-click-node
     @node-click="onClick"
@@ -18,19 +20,34 @@
       </div>
     </template>
   </el-tree-v2>
+  <el-empty v-else description="点击「加载」选择 JSON 配置" :image-size="72" />
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import type { TreeItem } from "../types";
 
-defineProps<{
+const props = defineProps<{
   data: TreeItem[];
   height: number;
 }>();
 
+function collectExpanded(items: TreeItem[]): string[] {
+  const ids: string[] = [];
+  for (const item of items) {
+    if (item.children?.length) {
+      ids.push(item.id);
+      ids.push(...collectExpanded(item.children));
+    }
+  }
+  return ids;
+}
+
+const expanded = computed(() => collectExpanded(props.data));
+
 const emit = defineEmits<{ click: [id: string] }>();
 
-const props = { value: "id", label: "label", children: "children" };
+const treeProps = { value: "id", label: "label", children: "children" };
 
 function onClick(node: TreeItem) {
   emit("click", node.id);

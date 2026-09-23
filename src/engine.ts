@@ -15,7 +15,11 @@ export class Engine extends EventEmitter {
   private readonly client: ThriftClient;
   private readonly log = getLogger();
 
-  constructor(jsonPath = path.resolve(process.cwd(), "simple.json"), host = "127.0.0.1", port = 9090) {
+  constructor(
+    jsonPath = path.resolve(process.cwd(), process.env.TREE_FILE ?? "demo.json"),
+    host = "127.0.0.1",
+    port = 9090
+  ) {
     super();
     this.jsonPath = jsonPath;
     this.client = new ThriftClient(host, port);

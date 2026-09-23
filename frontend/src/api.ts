@@ -4,6 +4,22 @@ export async function getTree() {
   return res.json() as Promise<{ path: string; tree: unknown }>;
 }
 
+export async function listConfigs() {
+  const res = await fetch("/api/configs");
+  if (!res.ok) throw new Error(await res.text());
+  return res.json() as Promise<{ current: string; path: string; files: string[] }>;
+}
+
+export async function loadConfig(file: string) {
+  const res = await fetch("/api/load", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ path: file }),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json() as Promise<{ ok: boolean; path: string; tree: unknown }>;
+}
+
 export async function saveTree(tree: unknown) {
   const res = await fetch("/api/tree", {
     method: "PUT",

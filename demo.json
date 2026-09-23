@@ -1,0 +1,168 @@
+{
+    "test_sequence": [
+        {
+            "name": "打开 DUT 端口",
+            "type": "node",
+            "dll": "./dll/wifi_test.dll",
+            "function": "open_dut_port",
+            "params": {
+                "port": {
+                    "type": "int",
+                    "value": 10,
+                    "min": 1,
+                    "max": 64
+                },
+                "sleep_ms": {
+                    "type": "int",
+                    "value": 200,
+                    "min": 0,
+                    "max": 5000
+                },
+                "port_desc": "diag port"
+            }
+        },
+        {
+            "name": "仪器初始化",
+            "type": "folder",
+            "loop_type": "none",
+            "children": [
+                {
+                    "name": "连接综测仪",
+                    "type": "node",
+                    "dll": "./dll/wifi_test.dll",
+                    "function": "connect_instrument",
+                    "params": {
+                        "ip": "192.168.1.100",
+                        "timeout_ms": {
+                            "type": "int",
+                            "value": 3000,
+                            "min": 500,
+                            "max": 10000
+                        }
+                    }
+                },
+                {
+                    "name": "设置频段",
+                    "type": "node",
+                    "dll": "./dll/wifi_test.dll",
+                    "function": "set_band",
+                    "params": {
+                        "band": "2.4G",
+                        "reset": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "标识位检查",
+            "type": "folder",
+            "dll": "./dll/wifi_test.dll",
+            "function": "get_input_params",
+            "params": {
+                "mode": "1,2,3"
+            },
+            "loop_type": "loop",
+            "children": [
+                {
+                    "name": "检查标识位",
+                    "type": "node",
+                    "dll": "./dll/wifi_test.dll",
+                    "function": "check_test_flag",
+                    "params": {
+                        "test_info": {
+                            "type": "int",
+                            "value": 40,
+                            "min": 0,
+                            "max": 255
+                        },
+                        "sleep_ms": {
+                            "type": "int",
+                            "value": 200,
+                            "min": 0,
+                            "max": 2000
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "WiFi 发射测试",
+            "type": "folder",
+            "params": {
+                "channel": "1,6,11"
+            },
+            "loop_type": "loop",
+            "children": [
+                {
+                    "name": "TX 功率",
+                    "type": "node",
+                    "dll": "./dll/wifi_test.dll",
+                    "function": "measure_tx_power",
+                    "params": {
+                        "target_dbm": {
+                            "type": "float",
+                            "value": 18.5,
+                            "min": 0,
+                            "max": 30
+                        },
+                        "limit_low": {
+                            "type": "float",
+                            "value": 16,
+                            "min": 0,
+                            "max": 30
+                        },
+                        "limit_high": {
+                            "type": "float",
+                            "value": 20,
+                            "min": 0,
+                            "max": 30
+                        }
+                    }
+                },
+                {
+                    "name": "EVM 测试",
+                    "type": "node",
+                    "dll": "./dll/wifi_test.dll",
+                    "function": "measure_evm",
+                    "params": {
+                        "rate": "MCS7",
+                        "limit_db": {
+                            "type": "float",
+                            "value": -28,
+                            "min": -40,
+                            "max": 0
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "接收灵敏度",
+            "type": "node",
+            "dll": "./dll/wifi_test.dll",
+            "function": "measure_rx_sensitivity",
+            "params": {
+                "channel": {
+                    "type": "int",
+                    "value": 6,
+                    "min": 1,
+                    "max": 13
+                },
+                "packet_count": {
+                    "type": "int",
+                    "value": 1000,
+                    "min": 100,
+                    "max": 10000
+                },
+                "enable_log": true
+            }
+        },
+        {
+            "name": "关闭 DUT 端口",
+            "type": "node",
+            "dll": "./dll/wifi_test.dll",
+            "function": "close_dut_port",
+            "params": {}
+        }
+    ]
+}
