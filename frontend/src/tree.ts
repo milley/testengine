@@ -1,9 +1,21 @@
 import type { NodeRuntimeState, RunStatus, TestNode, TreeItem } from "./types";
 
+/** Drop loop-expansion suffixes: "标识位检查[mode=1]/检查标识位" -> "标识位检查/检查标识位". */
+function normalize(name: string): string {
+  return name.replace(/\[[^\]]*\]/g, "");
+}
+
 function statusOf(path: string, name: string, states: NodeRuntimeState[]): RunStatus {
-  const exact = states.find((s) => s.name === path || s.name === name);
+  const exact = states.find(
+    (s) => s.name === path || s.name === name || normalize(s.name) === path
+  );
   if (exact) return exact.status;
-  const related = states.filter((s) => s.name.startsWith(path) || s.name.startsWith(name));
+  const related = states.filter(
+    (s) =>
+      s.name.startsWith(path) ||
+      s.name.startsWith(name) ||
+      normalize(s.name).startsWith(`${path}/`)
+  );
   if (related.some((s) => s.status === "running")) return "running";
   if (related.some((s) => s.status === "failed")) return "failed";
   if (related.some((s) => s.status === "stopped")) return "stopped";
