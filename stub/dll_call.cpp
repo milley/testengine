@@ -1,3 +1,4 @@
+#include "dll/wifi_test.h"
 #include "param_parser.h"
 
 #include <dlfcn.h>
@@ -5,7 +6,9 @@
 #include <map>
 #include <string>
 
-using TestFunction = void (*)(const std::map<std::string, std::string>&);
+using CreateFn = void* (*)();
+using CallFn = unsigned int (*)(void*, const char*, const std::map<std::string, std::string>&);
+using DestroyFn = void (*)(void*);
 
 int main(int argc, char** argv) {
     if (argc < 3) {
@@ -23,14 +26,24 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    auto func = reinterpret_cast<TestFunction>(dlsym(handle, name));
-    if (!func) {
-        std::cerr << "dlsym failed: " << name << " " << dlerror() << std::endl;
+    auto create = reinterpret_cast<CreateFn>(dlsym(handle, "wifi_test_create"));
+    auto call = reinterpret_cast<CallFn>(dlsym(handle, "wifi_test_call"));
+    auto destroy = reinterpret_cast<DestroyFn>(dlsym(handle, "wifi_test_destroy"));
+    if (!create || !call || !destroy) {
+        std::cerr << "dlsym failed: " << dlerror() << std::endl;
         dlclose(handle);
         return 1;
     }
 
-    func(params);
+    void* obj = create();
+    const unsigned int code = call(obj, name, params);
+    std::cout << "[DLL] return code: " << code << std::endl;
+    destroy(obj);
     dlclose(handle);
+
+    if (code != 0) {
+        std::cerr << "function returned error code: " << code << std::endl;
+        return 1;
+    }
     return 0;
 }

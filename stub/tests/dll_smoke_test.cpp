@@ -42,6 +42,7 @@ int main(int argc, char** argv) {
     expectContains(open, "open_dut_port params:");
     expectContains(open, "port=10");
     expectContains(open, "DUT port 10 opened");
+    expectContains(open, "return code: 0");
 
     auto tx = capture(caller + " \"" + dll + "\" measure_tx_power \"channel=6;target_dbm=18.5\" 2>&1");
     expectContains(tx, "power=18.2 dBm");
@@ -51,7 +52,7 @@ int main(int argc, char** argv) {
     expectContains(close, "DUT port closed");
 
     auto bad = capture(caller + " \"" + dll + "\" not_a_function 2>&1", true);
-    expectContains(bad, "dlsym failed");
+    expectContains(bad, "function not found");
 
     if (failures != 0) {
         std::cerr << failures << " dll assertion(s) failed" << std::endl;
