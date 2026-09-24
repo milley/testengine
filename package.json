@@ -13,7 +13,8 @@
     "serve": "tsx src/api_server.ts",
     "start": "node dist/main.js",
     "parse": "tsx src/main.ts parse --tree ./simple.json",
-    "ui": "npm run serve"
+    "ui": "npm run serve",
+    "test": "tsx --test tests/**/*.test.ts"
   },
   "dependencies": {
     "commander": "^12.1.0",
