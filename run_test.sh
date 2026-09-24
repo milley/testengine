@@ -78,6 +78,7 @@ echo "✅ Core compiled"
 echo "Compiling C++ stub..."
 cmake -S stub -B stub/build
 cmake --build stub/build -j4
+ctest --test-dir stub/build --output-on-failure
 echo "✅ Stub compiled"
 
 echo "Starting Thrift server..."
